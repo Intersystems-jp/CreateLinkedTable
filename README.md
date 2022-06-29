@@ -2,7 +2,7 @@
 SQLゲートウェイ接続した外部データソースへのリンクテーブルをプログラムで行う方法
 
 以下の「(管理ポータルで行う)リンクテーブルをプログラムで行う方法」で使用するサンプルです。
-http://tyoap1.iscinternal.com/csp/knowledge/result.csp?DocNo=543
+[https://faq.intersystems.co.jp/csp/knowledge/result.csp?DocNo=543](https://faq.intersystems.co.jp/csp/faq/result.csp?DocNo=543)
 
 
 ## １．サンプルについて
