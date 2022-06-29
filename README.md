@@ -6,7 +6,6 @@ http://tyoap1.iscinternal.com/csp/knowledge/result.csp?DocNo=543
 
 
 ## １．サンプルについて
-***
 リンクテーブルの作成には、%SYSTEM.SQL.Schema クラスの [CreateLinkedTable メソッド](https://docs.intersystems.com/irislatest/csp/documatic/%25CSP.Documatic.cls?&LIBRARY=%25SYS&CLASSNAME=%25SYSTEM.SQL.Schema#CreateLinkedTable)を使用します。
 
 このクラスメソッドを使用して実行する場合、リンクテーブルはReadOnly属性で作成されます。
@@ -15,8 +14,7 @@ ReadOnly属性を外したい場合は、第7引数の columnMap で指定す�
 このサンプルでは、全てのフィールド(カラム)に対して ReadOnlyなし(0) を設定する columnMap を作成し、リンクテーブルを作成しています。
 また、primaryKey はリンク元テーブルの primaryKey を引き継げるようにしています。
 
-## １．サンプルの使用手順
-***
+## ２．サンプルの使用手順
 - サンプルのインポート
 実行したいネームスペースに ISC.LinkUtils クラスをインポートします。
 
