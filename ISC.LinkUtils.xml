@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.2 (Build 338U)" ts="2022-06-16 11:51:09">
+<Class name="ISC.LinkUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66276,42456.150486</TimeChanged>
+<TimeCreated>66169,43672.138616</TimeCreated>
+
+<Method name="gatewayExists">
+<Description>
+メソッド：SQL Gateway DSN 定義の有無確認
+引数  　：1 - SQLゲートウェイ接続名
+戻り値　：0　　　定義なし
+      　  1以上　定義あり
+実行例　：write ##class(ISC.LinkUtils).gatewayExists("CHOFU-SEIZO")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>gateway:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	
+	&sql(select ID into :exist from %Library.sys_SQLConnection where Connection_Name=:gateway)
+	if (SQLCODE '= 0) {
+		set exist = 0
+	}
+	quit exist
+]]></Implementation>
+</Method>
+
+<Method name="LinkTable">
+<Description>
+メソッド：リンクテーブル作成
+引数    　gateway   SQL Gateway DSN名
+        　schema    スキーマ名
+        　table     テーブル名
+        　newSchema 新スキーマ名(なしの場合はスキーマ名と同じ)
+        　prikey    プライマリーキー(なしの場合はソーステーブルと同じ)
+実行例　：do ##class(ISC.LinkUtils).LinkTable("CHOFU-SEIZO","f","アフター基本ファイル")
+        　do ##class(ISC.LinkUtils).LinkTable("CHOFU-SEIZO","f","アフター明細ファイル")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>gateway:%String,schema:%String,table:%String,newSchema:%String="",prikey:%String=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	
+	// カラム情報の取得
+	set rs= ##class(%Library.ResultSet).%New("%GTWCatalog:SQLFields")
+	set sc = rs.Execute(gateway, table, schema)
+	if ($$$ISERR(sc)) {
+		do $system.OBJ.DisplayError(sc)
+		quit sc
+	}
+	set tname = schema _ "." _ table
+	while rs.Next() {
+		// columnMap("リンク・テーブルからの列名") = $lb("新規プロパティ名","新しい SQL フィールド名","read-only(1/0)")
+		// 今回は列名はリンク元と同じ、ReadOnlyなし(0) で設定 
+		set cols(rs."COLUMN_NAME") = $lb(rs."COLUMN_NAME",rs."COLUMN_NAME",0)
+	}
+	do rs.Close()
+	if '$data(cols) {
+		set sc = $system.Status.Error(5001, "No meta-data found for " _ tname)
+		do $system.OBJ.DisplayError(sc)
+		quit sc
+	}
+	
+	// PrimaryKeyの設定（引数で渡さずに自動設定にしたい場合）
+	if (prikey '= "") {
+		set pkeys = prikey
+	} else {
+
+		set rs= ##CLASS(%Library.ResultSet).%New("%GTWCatalog:SQLPrimaryKeys")
+
+		set sc = rs.Execute(gateway, tname)
+		if ($$$ISERR(sc)) {
+			do $system.OBJ.DisplayError(sc)
+			quit sc
+		}
+		set pkeys = ""
+		while rs.Next() {
+			if pkeys '= "" {
+				set pkeys = pkeys _ ","
+			}
+			set pkeys = pkeys _ rs."COLUMN_NAME"
+		}
+		do rs.Close()
+	}
+	
+	// スキーマ・テーブル名の設定
+	if (newSchema = "") {
+		set ctName = schema _ "." _ table
+	} else {
+		set ctName = newSchema _ "." _ table
+	}
+	
+	// リンクテーブル作成
+	set sc=##class(%SYSTEM.SQL.Schema).CreateLinkedTable(gateway,schema,table,pkeys,ctName,table,.cols)
+	
+	if ($$$ISERR(sc)) {
+		do $system.OBJ.DisplayError(sc)
+		quit sc
+	}
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="DeleteTable">
+<Description>
+メソッド：テーブル削除
+実行例　：do ##class(ISC.LinkUtils).DeleteTable("f.アフター明細ファイル")
+      　  do ##class(ISC.LinkUtils).DeleteTable("f.アフター基本ファイル")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>tname:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=$SYSTEM.OBJ.Delete(tname)
+	quit sc
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DataLocation>^ISC.LinkUtilsD</DataLocation>
+<DefaultData>LinkUtilsDefaultData</DefaultData>
+<IdLocation>^ISC.LinkUtilsD</IdLocation>
+<IndexLocation>^ISC.LinkUtilsI</IndexLocation>
+<StreamLocation>^ISC.LinkUtilsS</StreamLocation>
+<Data name="LinkUtilsDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>
