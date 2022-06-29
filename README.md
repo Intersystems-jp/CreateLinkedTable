@@ -29,9 +29,9 @@ VSCodeをご利用の場合は、使用したい IRIS に接続し、ISC.LinkUti
 
 実行例は以下の通りです。
 '''
-do ##class(ISC.LinkUtils).LinkTable("<dsn>","<Schema>","<Table>","<localClass>")
-/// 第1引数：dsn - SQLゲートウェイ接続名
-/// 第2引数：Schema - リンク元のスキーマ名　
-/// 第3引数：Table - リンク元のテーブル名　
-/// 第4引数：localClass - リンク先のクラス名　例：User.LinkedClass　
+do ##class(ISC.LinkUtils).LinkTable("<dsn>","<Schema>","<Table>","<localClass>")~~
+/// 第1引数：dsn - SQLゲートウェイ接続名~~
+/// 第2引数：Schema - リンク元のスキーマ名~~　
+/// 第3引数：Table - リンク元のテーブル名~~　
+/// 第4引数：localClass - リンク先のクラス名　例：User.LinkedClass~~　
 '''
