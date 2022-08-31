@@ -1,4 +1,8 @@
-# CreateLinkedTable
+# CreateLinkedTable  
+![image](https://user-images.githubusercontent.com/24215130/187603733-bf3f60a1-fbbd-4430-99a1-bab0aea3e628.png)
+**このサンプルはInterSystemsで正式サポートしているものではありません。ご自身の責任においてご利用ください。  
+　　また、サンプル公開時の最新IRISバージョンで作成しておりますので、実際に使用されるIRISバージョン毎に動作確認をお願いします。** 
+***
 SQLゲートウェイ接続した外部データソースへのリンクテーブルをプログラムで行う方法
 
 以下の「(管理ポータルで行う)リンクテーブルをプログラムで行う方法」で使用するサンプルです。
